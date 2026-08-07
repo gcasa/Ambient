@@ -1,0 +1,28 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+1A000001 /* Project object */ = {isa = PBXProject; attributes = {LastUpgradeCheck = 1600;}; buildConfigurationList = 1A000020; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; mainGroup = 1A000002; productRefGroup = 1A000003; targets = (1A000004,);};
+1A000002 = {isa = PBXGroup; children = (1A000010,1A000003,); sourceTree = "<group>";};
+1A000003 = {isa = PBXGroup; children = (1A000005,); name = Products; sourceTree = "<group>";};
+1A000005 = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Atmosphere.app; sourceTree = BUILT_PRODUCTS_DIR;};
+1A000010 = {isa = PBXGroup; path = Atmosphere; sourceTree = "<group>"; children = (1A000101,1A000102,1A000103,1A000104,1A000105,1A000106,1A000107,1A000108,1A000109,1A000110,1A000111,);};
+1A000101 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>";};
+1A000102 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATAppDelegate.h; sourceTree = "<group>";};
+1A000103 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATAppDelegate.m; sourceTree = "<group>";};
+1A000104 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATSound.h; sourceTree = "<group>";};
+1A000105 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATSound.m; sourceTree = "<group>";};
+1A000106 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATAudioEngine.h; sourceTree = "<group>";};
+1A000107 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATAudioEngine.m; sourceTree = "<group>";};
+1A000108 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATPresetStore.h; sourceTree = "<group>";};
+1A000109 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATPresetStore.m; sourceTree = "<group>";};
+1A000110 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATTimerController.h; sourceTree = "<group>";};
+1A000111 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATTimerController.m; sourceTree = "<group>";};
+1A000004 = {isa = PBXNativeTarget; buildConfigurationList = 1A000021; buildPhases = (1A000006,1A000007,); buildRules = (); dependencies = (); name = Atmosphere; productName = Atmosphere; productReference = 1A000005; productType = "com.apple.product-type.application";};
+1A000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1A000201,1A000202,1A000203,1A000204,1A000205,1A000206,); runOnlyForDeploymentPostprocessing = 0;};
+1A000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;};
+1A000201 = {isa = PBXBuildFile; fileRef = 1A000101;};1A000202 = {isa = PBXBuildFile; fileRef = 1A000103;};1A000203 = {isa = PBXBuildFile; fileRef = 1A000105;};1A000204 = {isa = PBXBuildFile; fileRef = 1A000107;};1A000205 = {isa = PBXBuildFile; fileRef = 1A000109;};1A000206 = {isa = PBXBuildFile; fileRef = 1A000111;};
+1A000020 = {isa = XCConfigurationList; buildConfigurations = (1A000301,1A000302,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
+1A000021 = {isa = XCConfigurationList; buildConfigurations = (1A000303,1A000304,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
+1A000301 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {};};1A000302 = {isa = XCBuildConfiguration; name = Release; buildSettings = {};};
+1A000303 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; INFOPLIST_FILE = Atmosphere/Info.plist; MACOSX_DEPLOYMENT_TARGET = 13.0; OTHER_LDFLAGS = ("-framework", Cocoa, "-framework", AVFoundation); PRODUCT_BUNDLE_IDENTIFIER = com.example.Atmosphere; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx;};};
+1A000304 = {isa = XCBuildConfiguration; name = Release; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; INFOPLIST_FILE = Atmosphere/Info.plist; MACOSX_DEPLOYMENT_TARGET = 13.0; OTHER_LDFLAGS = ("-framework", Cocoa, "-framework", AVFoundation); PRODUCT_BUNDLE_IDENTIFIER = com.example.Atmosphere; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx;};};
+}; rootObject = 1A000001; }
