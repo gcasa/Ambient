@@ -2,7 +2,7 @@
 #import "ATSound.h"
 
 @interface ATVoice : NSObject
-@property AVAudioSourceNode *source; @property AVAudioMixerNode *mixer; @property float volume; @property BOOL muted;
+@property AVAudioNode *source; @property AVAudioPlayerNode *player; @property AVAudioMixerNode *mixer; @property float volume; @property BOOL muted;
 @end
 @implementation ATVoice @end
 
@@ -21,6 +21,22 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
 - (BOOL)isMuted:(NSString *)identifier { return _voices[identifier].muted; }
 - (BOOL)startSound:(ATSound *)sound volume:(float)volume error:(NSError **)error {
     if (_voices[sound.identifier]) return YES;
+    if (sound.resourceName.length) {
+        NSURL *url=[NSBundle.mainBundle URLForResource:sound.resourceName.stringByDeletingPathExtension withExtension:sound.resourceName.pathExtension subdirectory:@"Audio"];
+        AVAudioFile *file=url?[[AVAudioFile alloc]initForReading:url error:error]:nil;
+        if (file) {
+            AVAudioPCMBuffer *buffer=[[AVAudioPCMBuffer alloc]initWithPCMFormat:file.processingFormat frameCapacity:(AVAudioFrameCount)file.length];
+            if ([file readIntoBuffer:buffer error:error]) {
+                AVAudioPlayerNode *player=[AVAudioPlayerNode new]; AVAudioMixerNode *mix=[AVAudioMixerNode new];
+                [_engine attachNode:player];[_engine attachNode:mix];[_engine connect:player to:mix format:buffer.format];[_engine connect:mix to:_master format:buffer.format];
+                ATVoice *voice=[ATVoice new];voice.source=player;voice.player=player;voice.mixer=mix;voice.volume=MAX(0,MIN(1,volume));mix.outputVolume=0;_voices[sound.identifier]=voice;
+                if (!_engine.running&&![_engine startAndReturnError:error]) { [_voices removeObjectForKey:sound.identifier];return NO; }
+                [player scheduleBuffer:buffer atTime:nil options:AVAudioPlayerNodeBufferLoops completionHandler:nil];[player play];
+                [self rampMixer:mix to:voice.volume duration:.7];if(self.stateChanged)self.stateChanged();return YES;
+            }
+        }
+        // If a bundled sample is missing or unreadable, continue with synthesis.
+    }
     __block double phase=0, phase2=0, filtered=0, slow=0; NSString *kind=sound.generator;
     AVAudioFormat *format=[[AVAudioFormat alloc] initStandardFormatWithSampleRate:44100 channels:2];
     AVAudioSourceNode *source=[[AVAudioSourceNode alloc] initWithFormat:format renderBlock:^OSStatus(BOOL *silent, const AudioTimeStamp *ts, AVAudioFrameCount count, AudioBufferList *data) {

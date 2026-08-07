@@ -30,6 +30,8 @@
           [ATSound sound:@"piano" name:@"Soft piano" category:@"Music" symbol:@"pianokeys" generator:@"piano" tags:@[@"music",@"gentle"]],
           [ATSound sound:@"bowls" name:@"Meditation bowls" category:@"Music" symbol:@"bell.fill" generator:@"bowls" tags:@[@"meditation",@"calm"]]
         ];
+        NSDictionary *samples=@{@"rain":@"rain.mp3",@"thunder":@"thunder.mp3",@"wind":@"wind.mp3",@"ocean":@"ocean.mp3",@"forest":@"forest.mp3",@"fire":@"fire.mp3",@"river":@"river.mp3",@"birds":@"birds.mp3",@"cafe":@"cafe.mp3",@"train":@"train.mp3",@"city":@"city.mp3",@"airplane":@"airplane.mp3",@"white":@"white.mp3",@"brown":@"brown.mp3",@"pink":@"pink.mp3",@"piano":@"piano.mp3",@"bowls":@"bowls.mp3"};
+        for(ATSound *sound in _sounds) sound.resourceName=samples[sound.identifier];
     } return self;
 }
 - (ATSound *)soundWithIdentifier:(NSString *)identifier { for (ATSound *s in _sounds) if ([s.identifier isEqual:identifier]) return s; return nil; }
