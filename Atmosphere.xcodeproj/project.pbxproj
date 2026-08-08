@@ -1,13 +1,21 @@
 // !$*UTF8*$!
 { archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
-1A000001 /* Project object */ = {isa = PBXProject; attributes = {LastUpgradeCheck = 1600;}; buildConfigurationList = 1A000020; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; mainGroup = 1A000002; productRefGroup = 1A000003; targets = (1A000004,);};
-1A000002 = {isa = PBXGroup; children = (1A000010,1A000114,1A000003,); sourceTree = "<group>";};
-1A000003 = {isa = PBXGroup; children = (1A000005,); name = Products; sourceTree = "<group>";};
+1A000001 /* Project object */ = {isa = PBXProject; attributes = {LastUpgradeCheck = 1600;}; buildConfigurationList = 1A000020; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; mainGroup = 1A000002; productRefGroup = 1A000003; targets = (1A000004,1B000004,1C000004,);};
+1A000002 = {isa = PBXGroup; children = (1A000010,1B000010,1C000010,1A000114,1A000003,); sourceTree = "<group>";};
+1A000003 = {isa = PBXGroup; children = (1A000005,1B000005,1C000005,); name = Products; sourceTree = "<group>";};
 1A000005 = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Atmosphere.app; sourceTree = BUILT_PRODUCTS_DIR;};
 1A000010 = {isa = PBXGroup; path = Atmosphere; sourceTree = "<group>"; children = (1A000101,1A000102,1A000103,1A000104,1A000105,1A000106,1A000107,1A000108,1A000109,1A000110,1A000111,1A000112,1A000113,);};
 1A000112 = {isa = PBXFileReference; lastKnownFileType = folder; name = Audio; path = Resources/Audio; sourceTree = "<group>";};
 1A000113 = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Resources/AppIcon.icns; sourceTree = "<group>";};
 1A000114 = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT;};
+1B000005 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = AtmosphereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR;};
+1B000010 = {isa = PBXGroup; path = AtmosphereTests; sourceTree = "<group>"; children = (1B000101,1B000103,);};
+1B000101 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtmosphereTests.m; sourceTree = "<group>";};
+1B000102 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT;};
+1B000103 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtmospherePerformanceTests.m; sourceTree = "<group>";};
+1C000005 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = AtmosphereUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR;};
+1C000010 = {isa = PBXGroup; path = AtmosphereUITests; sourceTree = "<group>"; children = (1C000101,);};
+1C000101 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtmosphereUITests.m; sourceTree = "<group>";};
 1A000101 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>";};
 1A000102 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATAppDelegate.h; sourceTree = "<group>";};
 1A000103 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATAppDelegate.m; sourceTree = "<group>";};
@@ -20,6 +28,16 @@
 1A000110 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATTimerController.h; sourceTree = "<group>";};
 1A000111 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATTimerController.m; sourceTree = "<group>";};
 1A000004 = {isa = PBXNativeTarget; buildConfigurationList = 1A000021; buildPhases = (1A000006,1A000007,1A000008,); buildRules = (); dependencies = (); name = Atmosphere; productName = Atmosphere; productReference = 1A000005; productType = "com.apple.product-type.application";};
+1B000004 = {isa = PBXNativeTarget; buildConfigurationList = 1B000021; buildPhases = (1B000006,1B000007,1B000008,); buildRules = (); dependencies = (); name = AtmosphereTests; productName = AtmosphereTests; productReference = 1B000005; productType = "com.apple.product-type.bundle.unit-test";};
+1B000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1B000201,1B000207,1B000202,1B000203,1B000204,1B000205,); runOnlyForDeploymentPostprocessing = 0;};
+1B000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (1B000206,); runOnlyForDeploymentPostprocessing = 0;};
+1B000008 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;};
+1C000004 = {isa = PBXNativeTarget; buildConfigurationList = 1C000021; buildPhases = (1C000006,1C000007,1C000008,); buildRules = (); dependencies = (1C000301,); name = AtmosphereUITests; productName = AtmosphereUITests; productReference = 1C000005; productType = "com.apple.product-type.bundle.ui-testing";};
+1C000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1C000201,); runOnlyForDeploymentPostprocessing = 0;};
+1C000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (1C000202,); runOnlyForDeploymentPostprocessing = 0;};
+1C000008 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;};
+1C000300 = {isa = PBXContainerItemProxy; containerPortal = 1A000001; proxyType = 1; remoteGlobalIDString = 1A000004; remoteInfo = Atmosphere;};
+1C000301 = {isa = PBXTargetDependency; target = 1A000004; targetProxy = 1C000300;};
 1A000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1A000201,1A000202,1A000203,1A000204,1A000205,1A000206,); runOnlyForDeploymentPostprocessing = 0;};
 1A000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;};
 1A000008 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (1A000207,1A000208,1A000209,); runOnlyForDeploymentPostprocessing = 0;};
@@ -27,9 +45,18 @@
 1A000207 = {isa = PBXBuildFile; fileRef = 1A000112;};
 1A000208 = {isa = PBXBuildFile; fileRef = 1A000113;};
 1A000209 = {isa = PBXBuildFile; fileRef = 1A000114;};
+1B000201 = {isa = PBXBuildFile; fileRef = 1B000101;};1B000202 = {isa = PBXBuildFile; fileRef = 1A000105;};1B000203 = {isa = PBXBuildFile; fileRef = 1A000107;};1B000204 = {isa = PBXBuildFile; fileRef = 1A000109;};1B000205 = {isa = PBXBuildFile; fileRef = 1A000111;};1B000206 = {isa = PBXBuildFile; fileRef = 1B000102;};
+1B000207 = {isa = PBXBuildFile; fileRef = 1B000103;};
+1C000201 = {isa = PBXBuildFile; fileRef = 1C000101;};1C000202 = {isa = PBXBuildFile; fileRef = 1B000102;};
 1A000020 = {isa = XCConfigurationList; buildConfigurations = (1A000301,1A000302,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
 1A000021 = {isa = XCConfigurationList; buildConfigurations = (1A000303,1A000304,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
+1B000021 = {isa = XCConfigurationList; buildConfigurations = (1B000303,1B000304,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
+1C000021 = {isa = XCConfigurationList; buildConfigurations = (1C000303,1C000304,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
 1A000301 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {};};1A000302 = {isa = XCBuildConfiguration; name = Release; buildSettings = {};};
 1A000303 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; INFOPLIST_FILE = Atmosphere/Info.plist; MACOSX_DEPLOYMENT_TARGET = 13.0; OTHER_LDFLAGS = ("-framework", Cocoa, "-framework", AVFoundation); PRODUCT_BUNDLE_IDENTIFIER = com.example.Atmosphere; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx;};};
 1A000304 = {isa = XCBuildConfiguration; name = Release; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; INFOPLIST_FILE = Atmosphere/Info.plist; MACOSX_DEPLOYMENT_TARGET = 13.0; OTHER_LDFLAGS = ("-framework", Cocoa, "-framework", AVFoundation); PRODUCT_BUNDLE_IDENTIFIER = com.example.Atmosphere; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx;};};
+1B000303 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; HEADER_SEARCH_PATHS = Atmosphere; MACOSX_DEPLOYMENT_TARGET = 13.0; OTHER_LDFLAGS = ("-framework", AVFoundation, "-framework", CoreAudio); PRODUCT_BUNDLE_IDENTIFIER = com.example.AtmosphereTests; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx;};};
+1B000304 = {isa = XCBuildConfiguration; name = Release; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; HEADER_SEARCH_PATHS = Atmosphere; MACOSX_DEPLOYMENT_TARGET = 13.0; OTHER_LDFLAGS = ("-framework", AVFoundation, "-framework", CoreAudio); PRODUCT_BUNDLE_IDENTIFIER = com.example.AtmosphereTests; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx;};};
+1C000303 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.example.AtmosphereUITests; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; TEST_TARGET_NAME = Atmosphere;};};
+1C000304 = {isa = XCBuildConfiguration; name = Release; buildSettings = {CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.example.AtmosphereUITests; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; TEST_TARGET_NAME = Atmosphere;};};
 }; rootObject = 1A000001; }

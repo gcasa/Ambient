@@ -2,20 +2,21 @@
 #import "ATSound.h"
 
 @interface ATVoice : NSObject
-@property AVAudioNode *source; @property AVAudioPlayerNode *player; @property AVAudioMixerNode *mixer; @property float volume; @property BOOL muted;
+@property AVAudioNode *source; @property AVAudioPlayerNode *player; @property AVAudioMixerNode *mixer; @property AVAudioPCMBuffer *buffer; @property float volume; @property BOOL muted; @property NSUInteger rampGeneration;
 @end
 @implementation ATVoice @end
 
-@interface ATAudioEngine () { AVAudioEngine *_engine; AVAudioMixerNode *_master; NSMutableDictionary<NSString*,ATVoice*> *_voices; BOOL _paused; }
+@interface ATAudioEngine () { AVAudioEngine *_engine; AVAudioMixerNode *_master; NSMutableDictionary<NSString*,ATVoice*> *_voices; BOOL _paused; BOOL _suspendedForSleep; BOOL _recovering; NSUInteger _masterRampGeneration; id _configurationObserver; }
 @end
 
 static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float)UINT32_MAX)*2.f-1.f; }
 
 @implementation ATAudioEngine
-- (instancetype)init { if((self=[super init])) { _engine=[AVAudioEngine new]; _master=[AVAudioMixerNode new]; _voices=[NSMutableDictionary new]; [_engine attachNode:_master]; [_engine connect:_master to:_engine.mainMixerNode format:nil]; _masterVolume=.75; } return self; }
+- (instancetype)init { if((self=[super init])) { _engine=[AVAudioEngine new]; _master=[AVAudioMixerNode new]; _voices=[NSMutableDictionary new]; [_engine attachNode:_master]; [_engine connect:_master to:_engine.mainMixerNode format:nil]; _masterVolume=.75; __weak typeof(self) weakSelf=self; _configurationObserver=[NSNotificationCenter.defaultCenter addObserverForName:AVAudioEngineConfigurationChangeNotification object:_engine queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note){ [weakSelf recoverFromConfigurationChange]; }]; } return self; }
+- (void)dealloc { if(_configurationObserver)[NSNotificationCenter.defaultCenter removeObserver:_configurationObserver]; }
 - (NSArray<NSString *> *)activeIdentifiers { return _voices.allKeys; }
 - (BOOL)paused { return _paused; }
-- (void)setMasterVolume:(float)v { _masterVolume=MAX(0,MIN(1,v)); _master.outputVolume=_masterVolume; }
+- (void)setMasterVolume:(float)v { _masterVolume=MAX(0,MIN(1,v)); _masterRampGeneration++; _master.outputVolume=_masterVolume; }
 - (BOOL)isActive:(NSString *)identifier { return _voices[identifier]!=nil; }
 - (float)volumeForSound:(NSString *)identifier { return _voices[identifier].volume; }
 - (BOOL)isMuted:(NSString *)identifier { return _voices[identifier].muted; }
@@ -29,10 +30,10 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
             if ([file readIntoBuffer:buffer error:error]) {
                 AVAudioPlayerNode *player=[AVAudioPlayerNode new]; AVAudioMixerNode *mix=[AVAudioMixerNode new];
                 [_engine attachNode:player];[_engine attachNode:mix];[_engine connect:player to:mix format:buffer.format];[_engine connect:mix to:_master format:buffer.format];
-                ATVoice *voice=[ATVoice new];voice.source=player;voice.player=player;voice.mixer=mix;voice.volume=MAX(0,MIN(1,volume));mix.outputVolume=0;_voices[sound.identifier]=voice;
+                ATVoice *voice=[ATVoice new];voice.source=player;voice.player=player;voice.mixer=mix;voice.buffer=buffer;voice.volume=MAX(0,MIN(1,volume));mix.outputVolume=0;_voices[sound.identifier]=voice;
                 if (!_engine.running&&![_engine startAndReturnError:error]) { [_voices removeObjectForKey:sound.identifier];return NO; }
                 [player scheduleBuffer:buffer atTime:nil options:AVAudioPlayerNodeBufferLoops completionHandler:nil];[player play];
-                [self rampMixer:mix to:voice.volume duration:.7];if(self.stateChanged)self.stateChanged();return YES;
+                [self rampVoice:voice to:voice.volume duration:.7];if(self.stateChanged)self.stateChanged();return YES;
             }
         }
         // If a bundled sample is missing or unreadable, continue with synthesis.
@@ -60,6 +61,22 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
             else if ([kind isEqual:@"insects"]) { x=sin(phase2)*(.025+.025*sin(phase*.00017)); phase2+=2*M_PI*4800/sr; }
             else if ([kind isEqual:@"piano"]) { double env=.5+.5*sin(phase*.000035); x=(sin(phase*2*M_PI*220/sr)+.5*sin(phase*2*M_PI*330/sr))*.035*env; }
             else if ([kind isEqual:@"bowls"]) { x=(sin(phase*2*M_PI*432/sr)+.3*sin(phase*2*M_PI*864/sr))*.045; }
+            else if ([kind isEqual:@"zen_bowls"]) {
+                // Three differently sized bowls, struck in turn. Each bowl includes
+                // slightly detuned upper modes to give the tone a natural shimmer.
+                const double frequencies[]={256.0, 320.0, 384.0};
+                const double intervals[]={0.0, 4.0, 8.0};
+                double cycle=fmod(phase/sr,12.0);
+                for(int bowl=0;bowl<3;bowl++) {
+                    double age=cycle-intervals[bowl];
+                    if(age<0) age+=12.0;
+                    double attack=MIN(1.0,age/.025);
+                    double envelope=attack*exp(-age/(4.8+bowl*.7));
+                    double angle=phase*2*M_PI*frequencies[bowl]/sr;
+                    double tone=sin(angle)+.32*sin(angle*2.01)+.16*sin(angle*2.67)+.08*sin(angle*4.08);
+                    x+=(float)(tone*envelope*.025);
+                }
+            }
             for (UInt32 b=0;b<data->mNumberBuffers;b++) ((float*)data->mBuffers[b].mData)[i]=x;
             phase++;
         } return noErr;
@@ -67,16 +84,22 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
     AVAudioMixerNode *mix=[AVAudioMixerNode new]; [_engine attachNode:source]; [_engine attachNode:mix]; [_engine connect:source to:mix format:format]; [_engine connect:mix to:_master format:format];
     ATVoice *v=[ATVoice new]; v.source=source; v.mixer=mix; v.volume=MAX(0,MIN(1,volume)); mix.outputVolume=0; _voices[sound.identifier]=v;
     if (!_engine.running && ![_engine startAndReturnError:error]) { [_voices removeObjectForKey:sound.identifier]; return NO; }
-    [self rampMixer:mix to:v.volume duration:.7]; if(self.stateChanged) self.stateChanged(); return YES;
+    [self rampVoice:v to:v.volume duration:.7]; if(self.stateChanged) self.stateChanged(); return YES;
 }
-- (void)rampMixer:(AVAudioMixerNode *)mixer to:(float)target duration:(NSTimeInterval)duration {
-    float start=mixer.outputVolume; int steps=20; for(int i=1;i<=steps;i++) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(duration*i/steps*NSEC_PER_SEC)),dispatch_get_main_queue(),^{ mixer.outputVolume=start+(target-start)*i/steps; });
+- (void)rampVoice:(ATVoice *)voice to:(float)target duration:(NSTimeInterval)duration {
+    NSUInteger generation=++voice.rampGeneration; float start=voice.mixer.outputVolume; int steps=MAX(1,MIN(120,(int)ceil(duration*30)));
+    for(int i=1;i<=steps;i++) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(duration*i/steps*NSEC_PER_SEC)),dispatch_get_main_queue(),^{ if(voice.rampGeneration==generation)voice.mixer.outputVolume=start+(target-start)*i/steps; });
 }
-- (void)stopSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; [_voices removeObjectForKey:identifier]; [self rampMixer:v.mixer to:0 duration:.35]; dispatch_after(dispatch_time(DISPATCH_TIME_NOW,.4*NSEC_PER_SEC),dispatch_get_main_queue(),^{ [self->_engine disconnectNodeOutput:v.source]; [self->_engine disconnectNodeOutput:v.mixer]; [self->_engine detachNode:v.source]; [self->_engine detachNode:v.mixer]; }); if(self.stateChanged)self.stateChanged(); }
-- (void)setVolume:(float)volume forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.volume=MAX(0,MIN(1,volume)); if(!v.muted)[self rampMixer:v.mixer to:v.volume duration:.08]; }
-- (void)setMuted:(BOOL)muted forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; v.muted=muted; [self rampMixer:v.mixer to:muted?0:v.volume duration:.15]; if(self.stateChanged)self.stateChanged(); }
-- (void)pauseAll { if(!_paused){ [_engine pause]; _paused=YES; if(self.stateChanged)self.stateChanged(); } }
-- (void)resumeAll { if(_paused){ NSError *e; [_engine startAndReturnError:&e]; _paused=NO; if(self.stateChanged)self.stateChanged(); } }
+- (void)stopSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; [_voices removeObjectForKey:identifier]; [self rampVoice:v to:0 duration:.35]; NSUInteger generation=v.rampGeneration; dispatch_after(dispatch_time(DISPATCH_TIME_NOW,.4*NSEC_PER_SEC),dispatch_get_main_queue(),^{ if(v.rampGeneration!=generation)return; [v.player stop]; [self->_engine disconnectNodeOutput:v.source]; [self->_engine disconnectNodeOutput:v.mixer]; [self->_engine detachNode:v.source]; [self->_engine detachNode:v.mixer]; }); if(self.stateChanged)self.stateChanged(); }
+- (void)setVolume:(float)volume forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.volume=MAX(0,MIN(1,volume)); if(!v.muted)[self rampVoice:v to:v.volume duration:.08]; }
+- (void)setMuted:(BOOL)muted forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.muted=muted; [self rampVoice:v to:muted?0:v.volume duration:.15]; if(self.stateChanged)self.stateChanged(); }
+- (void)cancelMasterRamp { _masterRampGeneration++; _master.outputVolume=_masterVolume; }
+- (void)pauseAll { if(!_paused){ [self cancelMasterRamp]; [_engine pause]; _paused=YES; if(self.stateChanged)self.stateChanged(); } }
+- (BOOL)resumeAll:(NSError **)error { if(!_paused)return YES; [self cancelMasterRamp]; if(![_engine startAndReturnError:error])return NO; _paused=NO; if(self.stateChanged)self.stateChanged(); return YES; }
 - (void)clear { for(NSString *key in _voices.allKeys.copy)[self stopSound:key]; }
-- (void)fadeOutOver:(NSTimeInterval)duration completion:(dispatch_block_t)completion { [self rampMixer:_master to:0 duration:duration]; dispatch_after(dispatch_time(DISPATCH_TIME_NOW,duration*NSEC_PER_SEC),dispatch_get_main_queue(),^{ [self pauseAll]; self->_master.outputVolume=self->_masterVolume; if(completion)completion(); }); }
+- (void)fadeOutOver:(NSTimeInterval)duration completion:(dispatch_block_t)completion { NSUInteger generation=++_masterRampGeneration;float start=_master.outputVolume;int steps=MAX(1,MIN(600,(int)ceil(duration*20)));for(int i=1;i<=steps;i++)dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(duration*i/steps*NSEC_PER_SEC)),dispatch_get_main_queue(),^{if(self->_masterRampGeneration==generation)self->_master.outputVolume=start*(1-(float)i/steps);});dispatch_after(dispatch_time(DISPATCH_TIME_NOW,duration*NSEC_PER_SEC),dispatch_get_main_queue(),^{if(self->_masterRampGeneration!=generation)return;[self pauseAll];self->_master.outputVolume=self->_masterVolume;if(completion)completion();}); }
+- (void)prepareForSystemSleep { _suspendedForSleep=!_paused&&_voices.count>0; if(_suspendedForSleep){[self cancelMasterRamp];[_engine pause];} }
+- (void)recoverAfterSystemWake { if(!_suspendedForSleep)return; _suspendedForSleep=NO; [self recoverAudioEngine]; }
+- (void)recoverFromConfigurationChange { if(_paused||_suspendedForSleep||_recovering||!_voices.count)return; [self recoverAudioEngine]; }
+- (void)recoverAudioEngine { if(_recovering)return;_recovering=YES;[_engine stop];for(ATVoice *voice in _voices.allValues)if(voice.player){[voice.player stop];[voice.player scheduleBuffer:voice.buffer atTime:nil options:AVAudioPlayerNodeBufferLoops completionHandler:nil];}NSError *error=nil;if(![_engine startAndReturnError:&error]){_recovering=NO;if(self.errorOccurred)self.errorOccurred(error);return;}for(ATVoice *voice in _voices.allValues)if(voice.player)[voice.player play];dispatch_async(dispatch_get_main_queue(),^{self->_recovering=NO;}); }
 @end

@@ -34,7 +34,8 @@
           [ATSound sound:@"pink" name:@"Pink noise" category:@"Noise" symbol:@"waveform.circle.fill" generator:@"pink" tags:@[@"balanced",@"sleep"]],
           [ATSound sound:@"fan" name:@"Electric fan" category:@"Noise" symbol:@"fanblades.fill" generator:@"airplane" tags:@[@"steady",@"sleep",@"hum"]],
           [ATSound sound:@"piano" name:@"Soft piano" category:@"Music" symbol:@"pianokeys" generator:@"piano" tags:@[@"music",@"gentle"]],
-          [ATSound sound:@"bowls" name:@"Meditation bowls" category:@"Music" symbol:@"bell.fill" generator:@"bowls" tags:@[@"meditation",@"calm"]]
+          [ATSound sound:@"bowls" name:@"Meditation bowl" category:@"Music" symbol:@"bell.fill" generator:@"bowls" tags:@[@"meditation",@"calm",@"single bowl"]],
+          [ATSound sound:@"zen_bowls" name:@"Zen bowl harmony" category:@"Music" symbol:@"bell.and.waves.left.and.right.fill" generator:@"zen_bowls" tags:@[@"meditation",@"calm",@"multiple bowls",@"multi tone",@"harmony"]]
         ];
         NSDictionary *samples=@{@"rain":@"rain.mp3",@"thunder":@"thunder.mp3",@"wind":@"wind.mp3",@"ocean":@"ocean.mp3",@"forest":@"forest.mp3",@"fire":@"fire.mp3",@"river":@"river.mp3",@"birds":@"birds.mp3",@"insects":@"insects.mp3",@"waterfall":@"waterfall.mp3",@"frogs":@"frogs.mp3",@"meadow":@"meadow.mp3",@"cafe":@"cafe.mp3",@"library":@"library.mp3",@"train":@"train.mp3",@"classic_train":@"classic_train.mp3",@"city":@"city.mp3",@"airplane":@"airplane.mp3",@"white":@"white.mp3",@"brown":@"brown.mp3",@"pink":@"pink.mp3",@"fan":@"fan.mp3",@"piano":@"piano.mp3",@"bowls":@"bowls.mp3"};
         for(ATSound *sound in _sounds) sound.resourceName=samples[sound.identifier];

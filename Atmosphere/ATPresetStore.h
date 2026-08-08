@@ -8,5 +8,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)deletePresetAtIndex:(NSUInteger)index;
 - (void)saveRecentMix:(NSDictionary *)mix;
 - (NSDictionary *)recentMix;
+- (instancetype)initWithUserDefaults:(NSUserDefaults *)defaults;
 @end
 NS_ASSUME_NONNULL_END
