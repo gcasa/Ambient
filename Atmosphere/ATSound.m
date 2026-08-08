@@ -20,17 +20,23 @@
           [ATSound sound:@"river" name:@"River" category:@"Nature" symbol:@"drop.fill" generator:@"river" tags:@[@"water",@"flow"]],
           [ATSound sound:@"birds" name:@"Birds" category:@"Nature" symbol:@"bird.fill" generator:@"birds" tags:@[@"morning",@"forest"]],
           [ATSound sound:@"insects" name:@"Night insects" category:@"Nature" symbol:@"moon.stars.fill" generator:@"insects" tags:@[@"night",@"crickets"]],
+          [ATSound sound:@"waterfall" name:@"Waterfall" category:@"Nature" symbol:@"drop.circle.fill" generator:@"river" tags:@[@"water",@"forest",@"powerful"]],
+          [ATSound sound:@"frogs" name:@"Pond frogs" category:@"Nature" symbol:@"aqi.medium" generator:@"insects" tags:@[@"pond",@"dusk",@"wildlife"]],
+          [ATSound sound:@"meadow" name:@"Sunny meadow" category:@"Nature" symbol:@"sun.max.fill" generator:@"forest" tags:@[@"birds",@"morning",@"field"]],
           [ATSound sound:@"cafe" name:@"Coffee shop" category:@"Places" symbol:@"cup.and.saucer.fill" generator:@"cafe" tags:@[@"people",@"focus"]],
-          [ATSound sound:@"train" name:@"Train" category:@"Places" symbol:@"tram.fill" generator:@"train" tags:@[@"travel",@"rhythm"]],
+          [ATSound sound:@"library" name:@"Quiet library" category:@"Places" symbol:@"books.vertical.fill" generator:@"cafe" tags:@[@"study",@"pages",@"focus"]],
+          [ATSound sound:@"train" name:@"City Train" category:@"Places" symbol:@"tram.fill" generator:@"train" tags:@[@"metro",@"subway",@"travel"]],
+          [ATSound sound:@"classic_train" name:@"Classic Train" category:@"Places" symbol:@"train.side.front.car" generator:@"train" tags:@[@"steam",@"whistle",@"locomotive",@"choo choo"]],
           [ATSound sound:@"city" name:@"City traffic" category:@"Places" symbol:@"building.2.fill" generator:@"city" tags:@[@"urban",@"traffic"]],
           [ATSound sound:@"airplane" name:@"Airplane cabin" category:@"Places" symbol:@"airplane" generator:@"airplane" tags:@[@"travel",@"hum"]],
           [ATSound sound:@"white" name:@"White noise" category:@"Noise" symbol:@"waveform" generator:@"white" tags:@[@"focus",@"sleep"]],
           [ATSound sound:@"brown" name:@"Brown noise" category:@"Noise" symbol:@"waveform.path" generator:@"brown" tags:@[@"deep",@"focus"]],
           [ATSound sound:@"pink" name:@"Pink noise" category:@"Noise" symbol:@"waveform.circle.fill" generator:@"pink" tags:@[@"balanced",@"sleep"]],
+          [ATSound sound:@"fan" name:@"Electric fan" category:@"Noise" symbol:@"fanblades.fill" generator:@"airplane" tags:@[@"steady",@"sleep",@"hum"]],
           [ATSound sound:@"piano" name:@"Soft piano" category:@"Music" symbol:@"pianokeys" generator:@"piano" tags:@[@"music",@"gentle"]],
           [ATSound sound:@"bowls" name:@"Meditation bowls" category:@"Music" symbol:@"bell.fill" generator:@"bowls" tags:@[@"meditation",@"calm"]]
         ];
-        NSDictionary *samples=@{@"rain":@"rain.mp3",@"thunder":@"thunder.mp3",@"wind":@"wind.mp3",@"ocean":@"ocean.mp3",@"forest":@"forest.mp3",@"fire":@"fire.mp3",@"river":@"river.mp3",@"birds":@"birds.mp3",@"cafe":@"cafe.mp3",@"train":@"train.mp3",@"city":@"city.mp3",@"airplane":@"airplane.mp3",@"white":@"white.mp3",@"brown":@"brown.mp3",@"pink":@"pink.mp3",@"piano":@"piano.mp3",@"bowls":@"bowls.mp3"};
+        NSDictionary *samples=@{@"rain":@"rain.mp3",@"thunder":@"thunder.mp3",@"wind":@"wind.mp3",@"ocean":@"ocean.mp3",@"forest":@"forest.mp3",@"fire":@"fire.mp3",@"river":@"river.mp3",@"birds":@"birds.mp3",@"insects":@"insects.mp3",@"waterfall":@"waterfall.mp3",@"frogs":@"frogs.mp3",@"meadow":@"meadow.mp3",@"cafe":@"cafe.mp3",@"library":@"library.mp3",@"train":@"train.mp3",@"classic_train":@"classic_train.mp3",@"city":@"city.mp3",@"airplane":@"airplane.mp3",@"white":@"white.mp3",@"brown":@"brown.mp3",@"pink":@"pink.mp3",@"fan":@"fan.mp3",@"piano":@"piano.mp3",@"bowls":@"bowls.mp3"};
         for(ATSound *sound in _sounds) sound.resourceName=samples[sound.identifier];
     } return self;
 }

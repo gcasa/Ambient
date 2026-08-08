@@ -10,7 +10,8 @@ int main(int argc, const char * argv[]) {
         NSApplication *app = NSApplication.sharedApplication;
         ATApplicationDelegate = [ATAppDelegate new];
         app.delegate = ATApplicationDelegate;
-        [app setActivationPolicy:NSApplicationActivationPolicyRegular];
+        BOOL hideDockIcon = [NSUserDefaults.standardUserDefaults boolForKey:@"ATHideDockIcon"];
+        [app setActivationPolicy:hideDockIcon ? NSApplicationActivationPolicyAccessory : NSApplicationActivationPolicyRegular];
 
         NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Main Menu"];
         NSMenuItem *applicationMenuItem = [[NSMenuItem alloc] initWithTitle:@"Atmosphere" action:nil keyEquivalent:@""];
@@ -18,10 +19,15 @@ int main(int argc, const char * argv[]) {
 
         NSMenu *applicationMenu = [[NSMenu alloc] initWithTitle:@"Atmosphere"];
         NSMenuItem *aboutItem = [[NSMenuItem alloc] initWithTitle:@"About Atmosphere"
-                                                          action:@selector(orderFrontStandardAboutPanel:)
+                                                          action:@selector(showInfoPanel:)
                                                    keyEquivalent:@""];
-        aboutItem.target = app;
+        aboutItem.target = ATApplicationDelegate;
         [applicationMenu addItem:aboutItem];
+        NSMenuItem *preferencesItem = [[NSMenuItem alloc] initWithTitle:@"Preferences…"
+                                                                action:@selector(showPreferences:)
+                                                         keyEquivalent:@","];
+        preferencesItem.target = ATApplicationDelegate;
+        [applicationMenu addItem:preferencesItem];
         [applicationMenu addItem:NSMenuItem.separatorItem];
 
         NSMenuItem *quitItem = [[NSMenuItem alloc] initWithTitle:@"Quit Atmosphere"
