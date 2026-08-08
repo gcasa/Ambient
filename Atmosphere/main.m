@@ -1,11 +1,15 @@
 #import <Cocoa/Cocoa.h>
 #import "ATAppDelegate.h"
 
+// NSApplication's delegate reference is not owning. Keep the delegate alive for
+// the lifetime of the process because status-menu items also target it.
+static ATAppDelegate *ATApplicationDelegate;
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSApplication *app = NSApplication.sharedApplication;
-        ATAppDelegate *delegate = [ATAppDelegate new];
-        app.delegate = delegate;
+        ATApplicationDelegate = [ATAppDelegate new];
+        app.delegate = ATApplicationDelegate;
         [app setActivationPolicy:NSApplicationActivationPolicyRegular];
 
         NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Main Menu"];
