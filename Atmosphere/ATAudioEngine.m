@@ -73,7 +73,7 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
     float start=mixer.outputVolume; int steps=20; for(int i=1;i<=steps;i++) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(duration*i/steps*NSEC_PER_SEC)),dispatch_get_main_queue(),^{ mixer.outputVolume=start+(target-start)*i/steps; });
 }
 - (void)stopSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; [_voices removeObjectForKey:identifier]; [self rampMixer:v.mixer to:0 duration:.35]; dispatch_after(dispatch_time(DISPATCH_TIME_NOW,.4*NSEC_PER_SEC),dispatch_get_main_queue(),^{ [self->_engine disconnectNodeOutput:v.source]; [self->_engine disconnectNodeOutput:v.mixer]; [self->_engine detachNode:v.source]; [self->_engine detachNode:v.mixer]; }); if(self.stateChanged)self.stateChanged(); }
-- (void)setVolume:(float)volume forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.volume=MAX(0,MIN(1,volume)); if(!v.muted)[self rampMixer:v.mixer to:v.volume duration:.08]; if(self.stateChanged)self.stateChanged(); }
+- (void)setVolume:(float)volume forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.volume=MAX(0,MIN(1,volume)); if(!v.muted)[self rampMixer:v.mixer to:v.volume duration:.08]; }
 - (void)setMuted:(BOOL)muted forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; v.muted=muted; [self rampMixer:v.mixer to:muted?0:v.volume duration:.15]; if(self.stateChanged)self.stateChanged(); }
 - (void)pauseAll { if(!_paused){ [_engine pause]; _paused=YES; if(self.stateChanged)self.stateChanged(); } }
 - (void)resumeAll { if(_paused){ NSError *e; [_engine startAndReturnError:&e]; _paused=NO; if(self.stateChanged)self.stateChanged(); } }
