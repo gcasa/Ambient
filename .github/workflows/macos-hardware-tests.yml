@@ -1,0 +1,17 @@
+name: macOS hardware and legacy tests
+on:
+  workflow_dispatch:
+
+jobs:
+  macos-13-intel:
+    runs-on: [self-hosted, macOS, Intel, macos-13]
+    steps:
+      - uses: actions/checkout@v4
+      - run: xcodebuild test -project Atmosphere.xcodeproj -scheme Atmosphere -destination 'platform=macOS,arch=x86_64' -only-testing:AtmosphereTests CODE_SIGNING_ALLOWED=NO
+
+  ui-tests:
+    runs-on: [self-hosted, macOS, accessibility-enabled]
+    steps:
+      - uses: actions/checkout@v4
+      - run: scripts/run-ui-tests.sh
+

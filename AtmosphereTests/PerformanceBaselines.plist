@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>ReferenceMachine</key><string>Mac mini (Mac16,10), Apple M4, 16 GB</string>
+<key>ReferenceOS</key><string>macOS 26.3</string>
+<key>RecordedAt</key><string>2026-08-08</string>
+<key>MaximumSeconds</key><dict>
+<key>CatalogLookup</key><real>0.030</real>
+<key>PreferenceSerialization</key><real>0.020</real>
+<key>ActiveVoiceControl</key><real>0.005</real>
+</dict>
+<key>MaximumRegressionPercent</key><integer>100</integer>
+</dict></plist>

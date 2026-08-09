@@ -16,7 +16,8 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
 - (void)dealloc { if(_configurationObserver)[NSNotificationCenter.defaultCenter removeObserver:_configurationObserver]; }
 - (NSArray<NSString *> *)activeIdentifiers { return _voices.allKeys; }
 - (BOOL)paused { return _paused; }
-- (void)setMasterVolume:(float)v { _masterVolume=MAX(0,MIN(1,v)); _masterRampGeneration++; _master.outputVolume=_masterVolume; }
+- (void)setMasterVolume:(float)v { _masterVolume=MAX(0,MIN(1,v)); _masterRampGeneration++; _master.outputVolume=_masterMuted?0:_masterVolume; }
+- (void)setMasterMuted:(BOOL)masterMuted { if(_masterMuted==masterMuted)return;_masterMuted=masterMuted;_masterRampGeneration++;_master.outputVolume=masterMuted?0:_masterVolume;if(self.stateChanged)self.stateChanged(); }
 - (BOOL)isActive:(NSString *)identifier { return _voices[identifier]!=nil; }
 - (float)volumeForSound:(NSString *)identifier { return _voices[identifier].volume; }
 - (BOOL)isMuted:(NSString *)identifier { return _voices[identifier].muted; }
@@ -93,11 +94,11 @@ static float ATRand(void) { return ((float)arc4random_uniform(UINT32_MAX)/(float
 - (void)stopSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; [_voices removeObjectForKey:identifier]; [self rampVoice:v to:0 duration:.35]; NSUInteger generation=v.rampGeneration; dispatch_after(dispatch_time(DISPATCH_TIME_NOW,.4*NSEC_PER_SEC),dispatch_get_main_queue(),^{ if(v.rampGeneration!=generation)return; [v.player stop]; [self->_engine disconnectNodeOutput:v.source]; [self->_engine disconnectNodeOutput:v.mixer]; [self->_engine detachNode:v.source]; [self->_engine detachNode:v.mixer]; }); if(self.stateChanged)self.stateChanged(); }
 - (void)setVolume:(float)volume forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.volume=MAX(0,MIN(1,volume)); if(!v.muted)[self rampVoice:v to:v.volume duration:.08]; }
 - (void)setMuted:(BOOL)muted forSound:(NSString *)identifier { ATVoice *v=_voices[identifier]; if(!v)return; v.muted=muted; [self rampVoice:v to:muted?0:v.volume duration:.15]; if(self.stateChanged)self.stateChanged(); }
-- (void)cancelMasterRamp { _masterRampGeneration++; _master.outputVolume=_masterVolume; }
+- (void)cancelMasterRamp { _masterRampGeneration++; _master.outputVolume=_masterMuted?0:_masterVolume; }
 - (void)pauseAll { if(!_paused){ [self cancelMasterRamp]; [_engine pause]; _paused=YES; if(self.stateChanged)self.stateChanged(); } }
 - (BOOL)resumeAll:(NSError **)error { if(!_paused)return YES; [self cancelMasterRamp]; if(![_engine startAndReturnError:error])return NO; _paused=NO; if(self.stateChanged)self.stateChanged(); return YES; }
 - (void)clear { for(NSString *key in _voices.allKeys.copy)[self stopSound:key]; }
-- (void)fadeOutOver:(NSTimeInterval)duration completion:(dispatch_block_t)completion { NSUInteger generation=++_masterRampGeneration;float start=_master.outputVolume;int steps=MAX(1,MIN(600,(int)ceil(duration*20)));for(int i=1;i<=steps;i++)dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(duration*i/steps*NSEC_PER_SEC)),dispatch_get_main_queue(),^{if(self->_masterRampGeneration==generation)self->_master.outputVolume=start*(1-(float)i/steps);});dispatch_after(dispatch_time(DISPATCH_TIME_NOW,duration*NSEC_PER_SEC),dispatch_get_main_queue(),^{if(self->_masterRampGeneration!=generation)return;[self pauseAll];self->_master.outputVolume=self->_masterVolume;if(completion)completion();}); }
+- (void)fadeOutOver:(NSTimeInterval)duration completion:(dispatch_block_t)completion { NSUInteger generation=++_masterRampGeneration;float start=_master.outputVolume;int steps=MAX(1,MIN(600,(int)ceil(duration*20)));for(int i=1;i<=steps;i++)dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(duration*i/steps*NSEC_PER_SEC)),dispatch_get_main_queue(),^{if(self->_masterRampGeneration==generation)self->_master.outputVolume=start*(1-(float)i/steps);});dispatch_after(dispatch_time(DISPATCH_TIME_NOW,duration*NSEC_PER_SEC),dispatch_get_main_queue(),^{if(self->_masterRampGeneration!=generation)return;[self pauseAll];self->_master.outputVolume=self->_masterMuted?0:self->_masterVolume;if(completion)completion();}); }
 - (void)prepareForSystemSleep { _suspendedForSleep=!_paused&&_voices.count>0; if(_suspendedForSleep){[self cancelMasterRamp];[_engine pause];} }
 - (void)recoverAfterSystemWake { if(!_suspendedForSleep)return; _suspendedForSleep=NO; [self recoverAudioEngine]; }
 - (void)recoverFromConfigurationChange { if(_paused||_suspendedForSleep||_recovering||!_voices.count)return; [self recoverAudioEngine]; }

@@ -1,0 +1,58 @@
+name: macOS compatibility
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-14
+            os: macOS 14
+            arch: arm64
+          - runner: macos-14-large
+            os: macOS 14
+            arch: x86_64
+          - runner: macos-15
+            os: macOS 15
+            arch: arm64
+          - runner: macos-15-intel
+            os: macOS 15
+            arch: x86_64
+          - runner: macos-26
+            os: macOS 26
+            arch: arm64
+          - runner: macos-26-intel
+            os: macOS 26
+            arch: x86_64
+    name: ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          xcodebuild test \
+            -project Atmosphere.xcodeproj \
+            -scheme Atmosphere \
+            -destination "platform=macOS,arch=${{ matrix.arch }}" \
+            -only-testing:AtmosphereTests \
+            CODE_SIGNING_ALLOWED=NO
+
+  deployment-target:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify universal macOS 13 deployment build
+        run: |
+          xcodebuild build \
+            -project Atmosphere.xcodeproj \
+            -scheme Atmosphere \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            ARCHS='arm64 x86_64' \
+            MACOSX_DEPLOYMENT_TARGET=13.0 \
+            CODE_SIGNING_ALLOWED=NO
+

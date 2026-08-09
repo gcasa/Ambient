@@ -4,6 +4,7 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface ATAudioEngine : NSObject
 @property (nonatomic) float masterVolume;
+@property (nonatomic, getter=isMasterMuted) BOOL masterMuted;
 @property (nonatomic, readonly) BOOL paused;
 @property (nonatomic, copy, readonly) NSArray<NSString *> *activeIdentifiers;
 @property (nonatomic, copy, nullable) void (^stateChanged)(void);

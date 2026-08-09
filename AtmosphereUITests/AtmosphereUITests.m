@@ -13,8 +13,8 @@
     [self.app launch];
     XCUIElement *window=self.app.windows[@"Atmosphere"];
     XCTAssertTrue([window waitForExistenceWithTimeout:3]);
-    XCUIElement *clear=self.app.buttons[@"clear-mix"];
-    if(clear.exists)[clear click];
+    XCUIElement *stop=self.app.buttons[@"stop-all"];
+    if(stop.exists)[stop click];
 }
 
 - (void)testSearchPlayPauseAndClearWorkflow {
@@ -37,7 +37,11 @@
     XCTAssertTrue([self.app.buttons[@"pause-all"] waitForExistenceWithTimeout:1]);
     [self.app.buttons[@"pause-all"] click];
 
-    [self.app.buttons[@"clear-mix"] click];
+    XCUIElement *mute=self.app.buttons[@"mute-all"];
+    [mute click];
+    [self.app.buttons[@"mute-all"] click];
+
+    [self.app.buttons[@"stop-all"] click];
     NSPredicate *empty=[NSPredicate predicateWithFormat:@"value == 'Choose sounds to begin'"];
     [self expectationForPredicate:empty evaluatedWithObject:status handler:nil];
     [self waitForExpectationsWithTimeout:2 handler:nil];

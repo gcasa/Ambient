@@ -9,10 +9,11 @@
 1A000113 = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Resources/AppIcon.icns; sourceTree = "<group>";};
 1A000114 = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT;};
 1B000005 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = AtmosphereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR;};
-1B000010 = {isa = PBXGroup; path = AtmosphereTests; sourceTree = "<group>"; children = (1B000101,1B000103,);};
+1B000010 = {isa = PBXGroup; path = AtmosphereTests; sourceTree = "<group>"; children = (1B000101,1B000103,1B000104,);};
 1B000101 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtmosphereTests.m; sourceTree = "<group>";};
 1B000102 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT;};
 1B000103 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtmospherePerformanceTests.m; sourceTree = "<group>";};
+1B000104 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PerformanceBaselines.plist; sourceTree = "<group>";};
 1C000005 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = AtmosphereUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR;};
 1C000010 = {isa = PBXGroup; path = AtmosphereUITests; sourceTree = "<group>"; children = (1C000101,);};
 1C000101 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtmosphereUITests.m; sourceTree = "<group>";};
@@ -31,7 +32,7 @@
 1B000004 = {isa = PBXNativeTarget; buildConfigurationList = 1B000021; buildPhases = (1B000006,1B000007,1B000008,); buildRules = (); dependencies = (); name = AtmosphereTests; productName = AtmosphereTests; productReference = 1B000005; productType = "com.apple.product-type.bundle.unit-test";};
 1B000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1B000201,1B000207,1B000202,1B000203,1B000204,1B000205,); runOnlyForDeploymentPostprocessing = 0;};
 1B000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (1B000206,); runOnlyForDeploymentPostprocessing = 0;};
-1B000008 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;};
+1B000008 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (1B000208,); runOnlyForDeploymentPostprocessing = 0;};
 1C000004 = {isa = PBXNativeTarget; buildConfigurationList = 1C000021; buildPhases = (1C000006,1C000007,1C000008,); buildRules = (); dependencies = (1C000301,); name = AtmosphereUITests; productName = AtmosphereUITests; productReference = 1C000005; productType = "com.apple.product-type.bundle.ui-testing";};
 1C000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1C000201,); runOnlyForDeploymentPostprocessing = 0;};
 1C000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (1C000202,); runOnlyForDeploymentPostprocessing = 0;};
@@ -47,6 +48,7 @@
 1A000209 = {isa = PBXBuildFile; fileRef = 1A000114;};
 1B000201 = {isa = PBXBuildFile; fileRef = 1B000101;};1B000202 = {isa = PBXBuildFile; fileRef = 1A000105;};1B000203 = {isa = PBXBuildFile; fileRef = 1A000107;};1B000204 = {isa = PBXBuildFile; fileRef = 1A000109;};1B000205 = {isa = PBXBuildFile; fileRef = 1A000111;};1B000206 = {isa = PBXBuildFile; fileRef = 1B000102;};
 1B000207 = {isa = PBXBuildFile; fileRef = 1B000103;};
+1B000208 = {isa = PBXBuildFile; fileRef = 1B000104;};
 1C000201 = {isa = PBXBuildFile; fileRef = 1C000101;};1C000202 = {isa = PBXBuildFile; fileRef = 1B000102;};
 1A000020 = {isa = XCConfigurationList; buildConfigurations = (1A000301,1A000302,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
 1A000021 = {isa = XCConfigurationList; buildConfigurations = (1A000303,1A000304,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;};
